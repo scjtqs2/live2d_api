@@ -1,0 +1,29 @@
+version: "3"
+services:
+  php:
+    image: php:7.4-fpm-alpine
+    container_name: live2d_api_php
+    restart: always
+    expose:
+      - 9000
+    networks:
+      - live2d_api
+    volumes:
+      - ./:/var/www/html
+  nginx:
+    image: nginx:alpine
+    container_name: live2d_api_nginx
+    restart: always
+    networks:
+      - live2d_api
+    depends_on:
+      - php
+    ports:
+      - 1234:80
+    volumes:
+      - ./live2d.conf:/etc/nginx/conf.d/default.conf
+      - ./:/var/www/html
+
+networks:
+  live2d_api:
+    driver: bridge
